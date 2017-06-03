@@ -6,17 +6,24 @@ public class HeroRabit : MonoBehaviour {
 
 	bool isGrounded = false;
 	bool JumpActive = false;
+	bool bigRabit = false;
+	bool smallRabit = true;
+	bool rabit = true;
 	float JumpTime = 0f;
 	public float MaxJumpTime = 2f;
 	public float JumpSpeed = 2f;
 	
 	public float speed = 1;
-	
+
+	Transform heroParent = null;
 	
 	Rigidbody2D myBody = null;
 	SpriteRenderer sr = null;
 	// Use this for initialization
 	void Start () {
+
+		//Зберегти стандартний батьківський GameObject
+		this.heroParent = this.transform.parent;
 		myBody = this.GetComponent<Rigidbody2D> ();
 		sr = GetComponent<SpriteRenderer>();
 		LevelController.current.setStartPosition (transform.position);
@@ -42,6 +49,19 @@ public class HeroRabit : MonoBehaviour {
 			isGrounded = false;
 		}
 		//Намалювати лінію (для розробника)
+
+
+		//Згадуємо ground check
+		if(hit) {
+			if(hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null){
+				//Приліпаємо до платформи
+				SetNewParent(this.transform, hit.transform);
+			}
+		} else {
+			//Ми в повітрі відліпаємо під платформи
+			SetNewParent(this.transform, this.heroParent);
+		}
+
 
 		if(Input.GetButtonDown("Jump") && isGrounded) {
 			this.JumpActive = true;
@@ -85,9 +105,51 @@ public class HeroRabit : MonoBehaviour {
 		} else {
 			animator.SetBool ("jump", true);
 		}
+
 	
 	}
 
 
+
+	static void SetNewParent(Transform obj, Transform new_parent) {
+		if(obj.transform.parent != new_parent) {
+			//Засікаємо позицію у Глобальних координатах
+			Vector3 pos = obj.transform.position;
+			//Встановлюємо нового батька
+			obj.transform.parent = new_parent;
+			//Після зміни батька координати кролика зміняться
+			//Оскільки вони тепер відносно іншого об’єкта
+			//повертаємо кролика в ті самі глобальні координати
+			obj.transform.position = pos;
+	}
+}
+
+
+	public void becomeBigger(){
+		if(!this.bigRabit){
+			this.transform.localScale = Vector3.one * 2;
+			this.rabit=false;
+			this.bigRabit=true;
+			this.smallRabit=false;
+		}
+	}
+
+	public IEnumerator bombAction(){
+		Animator animator = GetComponent<Animator> ();
+		if(this.bigRabit){
+			this.transform.localScale = Vector3.one;
+			this.smallRabit=true;
+			this.bigRabit=false;
+			this.rabit=false;
+		}
+
+		if(this.smallRabit){
+			
+			//animator.SetTrigger ("die");
+			yield return new WaitForSeconds(1.0f);
+			LevelController.current.onRabitDeath(this);
+			//animator.SetBool ("die",false);
+		}
+	 }
 	
 }

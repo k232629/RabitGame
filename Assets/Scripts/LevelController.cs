@@ -7,6 +7,11 @@ public class LevelController : MonoBehaviour {
 
 	public static LevelController current;
 
+	public int coins=0;
+	public int fruits=0;
+	public int crystals=0;
+
+
 		void Awake() {
 			current = this;
 		}
@@ -22,5 +27,19 @@ public class LevelController : MonoBehaviour {
 			rabit.transform.position = this.startingPosition;
 		}
 
+		public void addCoins(int n){
+			coins+=n;
+
+		}
+
+		public void addFruits(int n){
+			fruits+=n;
+
+		}
+
+		public void addCrystals(int n){
+			crystals+=n;
+
+		}
 	
 }
