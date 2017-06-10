@@ -37,76 +37,76 @@ public class HeroRabit : MonoBehaviour {
 
 	void FixedUpdate () {
 		//[-1, 1]
-
-		Vector3 from = transform.position + Vector3.up * 0.3f;
-		Vector3 to = transform.position + Vector3.down * 0.1f;
-		int layer_id = 1 << LayerMask.NameToLayer ("Ground");
-		//Перевіряємо чи проходить лінія через Collider з шаром Ground
-		RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
-		if(hit) {
-			isGrounded = true;
-		} else {
-			isGrounded = false;
-		}
-		//Намалювати лінію (для розробника)
-
-
-		//Згадуємо ground check
-		if(hit) {
-			if(hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null){
-				//Приліпаємо до платформи
-				SetNewParent(this.transform, hit.transform);
+		if (rabit) {
+			Vector3 from = transform.position + Vector3.up * 0.3f;
+			Vector3 to = transform.position + Vector3.down * 0.1f;
+			int layer_id = 1 << LayerMask.NameToLayer ("Ground");
+			//Перевіряємо чи проходить лінія через Collider з шаром Ground
+			RaycastHit2D hit = Physics2D.Linecast (from, to, layer_id);
+			if (hit) {
+				isGrounded = true;
+			} else {
+				isGrounded = false;
 			}
-		} else {
-			//Ми в повітрі відліпаємо під платформи
-			SetNewParent(this.transform, this.heroParent);
-		}
+			//Намалювати лінію (для розробника)
 
 
-		if(Input.GetButtonDown("Jump") && isGrounded) {
-			this.JumpActive = true;
-		}
-		if(this.JumpActive) {
-			//Якщо кнопку ще тримають
-			if(Input.GetButton("Jump")) {
-				this.JumpTime += Time.deltaTime;
-				if (this.JumpTime < this.MaxJumpTime) {
-					Vector2 vel = myBody.velocity;
-					vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
-					myBody.velocity = vel;
+			//Згадуємо ground check
+			if (hit) {
+				if (hit.transform != null && hit.transform.GetComponent<MovingPlatform> () != null) {
+					//Приліпаємо до платформи
+					SetNewParent (this.transform, hit.transform);
 				}
 			} else {
-		this.JumpActive = false;
-		this.JumpTime = 0;
-		}
-}
-		float value = Input.GetAxis ("Horizontal");
-		Animator animator = GetComponent<Animator> ();
+				//Ми в повітрі відліпаємо під платформи
+				SetNewParent (this.transform, this.heroParent);
+			}
 
-		if (Mathf.Abs (value) > 0) {
-			Vector2 vel = myBody.velocity;
-			vel.x = value * speed;
-			myBody.velocity = vel;
-		}
 
-		if(value < 0) {
-			sr.flipX = true;
-		} else if(value > 0) {
-			sr.flipX = false;
-		}
+			if (Input.GetButtonDown ("Jump") && isGrounded) {
+				this.JumpActive = true;
+			}
+			if (this.JumpActive) {
+				//Якщо кнопку ще тримають
+				if (Input.GetButton ("Jump")) {
+					this.JumpTime += Time.deltaTime;
+					if (this.JumpTime < this.MaxJumpTime) {
+						Vector2 vel = myBody.velocity;
+						vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
+						myBody.velocity = vel;
+					}
+				} else {
+					this.JumpActive = false;
+					this.JumpTime = 0;
+				}
+			}
+			float value = Input.GetAxis ("Horizontal");
+			Animator animator = GetComponent<Animator> ();
 
-		if(Mathf.Abs(value) > 0) {
-			animator.SetBool ("run", true);
-		} else {
-			animator.SetBool ("run", false);
-		}
-		if(this.isGrounded) {
-			animator.SetBool ("jump", false);
-		} else {
-			animator.SetBool ("jump", true);
-		}
+			if (Mathf.Abs (value) > 0) {
+				Vector2 vel = myBody.velocity;
+				vel.x = value * speed;
+				myBody.velocity = vel;
+			}
 
-	
+			if (value < 0) {
+				sr.flipX = true;
+			} else if (value > 0) {
+				sr.flipX = false;
+			}
+
+			if (Mathf.Abs (value) > 0) {
+				animator.SetBool ("run", true);
+			} else {
+				animator.SetBool ("run", false);
+			}
+			if (this.isGrounded) {
+				animator.SetBool ("jump", false);
+			} else {
+				animator.SetBool ("jump", true);
+			}
+
+		}
 	}
 
 
@@ -128,28 +128,29 @@ public class HeroRabit : MonoBehaviour {
 	public void becomeBigger(){
 		if(!this.bigRabit){
 			this.transform.localScale = Vector3.one * 2;
-			this.rabit=false;
 			this.bigRabit=true;
-			this.smallRabit=false;
 		}
 	}
 
-	public IEnumerator bombAction(){
+	public IEnumerator dieAnimation(){
 		Animator animator = GetComponent<Animator> ();
 		if(this.bigRabit){
 			this.transform.localScale = Vector3.one;
-			this.smallRabit=true;
 			this.bigRabit=false;
-			this.rabit=false;
 		}
-
-		if(this.smallRabit){
-			
-			//animator.SetTrigger ("die");
-			yield return new WaitForSeconds(1.0f);
+		else{
+			rabit = false;
+			animator.SetBool ("die",true);
+			yield return new WaitForSeconds(1.5f);
 			LevelController.current.onRabitDeath(this);
-			//animator.SetBool ("die",false);
+			animator.SetBool ("die",false);
+			rabit = true;
 		}
 	 }
+
+	public void dead(){
+		
+		StartCoroutine (dieAnimation ());
+	}
 	
 }

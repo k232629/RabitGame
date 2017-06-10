@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bomb : Collectable {
 	
 	protected override void OnRabitHit (HeroRabit rabit){
-		StartCoroutine(rabit.bombAction ());
+		rabit.dead ();
 		this.CollectedHide ();
 
 
