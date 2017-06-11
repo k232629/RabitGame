@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HeroRabit : MonoBehaviour {
+	public bool startLevel;
 	public static HeroRabit lastRabit = null;
 	bool isGrounded = false;
 	bool JumpActive = false;
@@ -43,7 +44,7 @@ public class HeroRabit : MonoBehaviour {
 
 	void FixedUpdate () {
 		//[-1, 1]
-		if (rabit) {
+		if (rabit&&!startLevel) {
 			Vector3 from = transform.position + Vector3.up * 0.3f;
 			Vector3 to = transform.position + Vector3.down * 0.1f;
 			int layer_id = 1 << LayerMask.NameToLayer ("Ground");
