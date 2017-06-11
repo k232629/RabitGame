@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HeroRabit : MonoBehaviour {
-
+	public static HeroRabit lastRabit = null;
 	bool isGrounded = false;
 	bool JumpActive = false;
 	bool bigRabit = false;
@@ -19,7 +19,11 @@ public class HeroRabit : MonoBehaviour {
 	
 	Rigidbody2D myBody = null;
 	SpriteRenderer sr = null;
-	// Use this for initialization
+
+	void Awake() {
+		lastRabit = this;
+	}
+
 	void Start () {
 
 		//Зберегти стандартний батьківський GameObject
@@ -29,6 +33,8 @@ public class HeroRabit : MonoBehaviour {
 		LevelController.current.setStartPosition (transform.position);
 
 	}
+
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -152,5 +158,31 @@ public class HeroRabit : MonoBehaviour {
 		
 		StartCoroutine (dieAnimation ());
 	}
-	
+
+	public void OnTriggerEnter2D(Collider2D collider){
+		if (rabit) {
+			GreenOrc greenOrc = collider.gameObject.GetComponent<GreenOrc> ();
+			if (greenOrc != null) {
+				if (greenOrc.isLive) {
+					if (collider == greenOrc.body) {
+						this.dead ();
+						greenOrc.attack ();
+					} else if (collider == greenOrc.head) {
+						greenOrc.dead ();
+					}
+				}
+			}
+		}
+		if (rabit) {
+			BrownOrc brownOrc = collider.gameObject.GetComponent<BrownOrc> ();
+			if (brownOrc != null) {
+				if (brownOrc.isLive) {
+					if (collider == brownOrc.head) {
+						brownOrc.dead ();
+					}
+				}
+			}
+		}
+	}
+		
 }
