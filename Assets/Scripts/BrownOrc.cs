@@ -24,6 +24,8 @@ public class BrownOrc : Orc {
 		Vector3 my_pos = this.transform.position;
 		Vector3 rabit_pos = HeroRabit.lastRabit.transform.position;
 			if (Time.time - this.lastCarrot > time) {
+				if(SoundManager.Instance.isSoundOn())
+					attackSource.Play ();
 				animator.SetTrigger ("attack");
 				this.lastCarrot = Time.time;
 				GameObject gameObject = GameObject.Instantiate (this.carrot);

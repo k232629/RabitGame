@@ -588,9 +588,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c482a66fb5fcfce4196b5e33b63f129a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pause: {fileID: 1944258440}
+  settingsPrefab: {fileID: 1023549458312664, guid: 5332efa58ec191b4386ffdd29fd5acc5,
+    type: 2}
+  losePrefab: {fileID: 0}
+  winPrefab: {fileID: 0}
+  lives: {fileID: 0}
+  crystals: {fileID: 0}
+  labelCoins: {fileID: 0}
+  labelFruits: {fileID: 0}
+  mainSceneCoins: {fileID: 0}
   coins: 0
   fruits: 0
-  crystals: 0
+  music: {fileID: 8300000, guid: 57a5b2120c2d04fa9bcb5b2e99ee9361, type: 3}
+  allCollectedCoins: 0
 --- !u!4 &545917980
 Transform:
   m_ObjectHideFlags: 0
@@ -1700,6 +1711,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4637483762687738, guid: b814350b0e640284793b13d6afd560c9,
     type: 2}
   m_PrefabInternal: {fileID: 1944258438}
+--- !u!114 &1944258440 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114947062137760432, guid: b814350b0e640284793b13d6afd560c9,
+    type: 2}
+  m_PrefabInternal: {fileID: 1944258438}
+  m_Script: {fileID: 11500000, guid: 68ce84d8ff1ab8d4f809e5ac6e482326, type: 3}
 --- !u!1 &1994551691
 GameObject:
   m_ObjectHideFlags: 0

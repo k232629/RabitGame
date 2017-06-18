@@ -37,7 +37,9 @@ public class Crystals : MonoBehaviour {
 		}
 	}
 
-
+	public bool getCrystal(CrystalColor color){
+		return obtainCrystal.ContainsKey (color);
+	}
 
 
 }

@@ -8,7 +8,6 @@ public class HeroRabit : MonoBehaviour {
 	bool isGrounded = false;
 	bool JumpActive = false;
 	bool bigRabit = false;
-	bool smallRabit = true;
 	bool rabit = true;
 	float JumpTime = 0f;
 	public float MaxJumpTime = 2f;
@@ -20,13 +19,23 @@ public class HeroRabit : MonoBehaviour {
 	
 	Rigidbody2D myBody = null;
 	SpriteRenderer sr = null;
-
+	public AudioClip walkSound = null;
+	public AudioClip touchdownSound = null;
+	public AudioClip dieSound = null;
+	AudioSource walkSource = null;
+	AudioSource touchdownSource = null;
+	AudioSource dieSource = null;
 	void Awake() {
 		lastRabit = this;
 	}
 
 	void Start () {
-
+		walkSource = gameObject.AddComponent<AudioSource> ();
+		walkSource.clip = walkSound;
+		touchdownSource = gameObject.AddComponent<AudioSource> ();
+		touchdownSource.clip = touchdownSound;
+		dieSource = gameObject.AddComponent<AudioSource> ();
+		dieSource.clip = dieSound;
 		//Зберегти стандартний батьківський GameObject
 		this.heroParent = this.transform.parent;
 		myBody = this.GetComponent<Rigidbody2D> ();
@@ -55,8 +64,6 @@ public class HeroRabit : MonoBehaviour {
 			} else {
 				isGrounded = false;
 			}
-			//Намалювати лінію (для розробника)
-
 
 			//Згадуємо ground check
 			if (hit) {
@@ -103,13 +110,21 @@ public class HeroRabit : MonoBehaviour {
 			}
 
 			if (Mathf.Abs (value) > 0) {
+				
 				animator.SetBool ("run", true);
 			} else {
+				if(SoundManager.Instance.isSoundOn())
+					walkSource.Play ();
+				else
+					walkSource.Pause ();
 				animator.SetBool ("run", false);
 			}
 			if (this.isGrounded) {
+				
 				animator.SetBool ("jump", false);
 			} else {
+				if(SoundManager.Instance.isSoundOn())
+				touchdownSource.Play ();
 				animator.SetBool ("jump", true);
 			}
 
@@ -148,6 +163,8 @@ public class HeroRabit : MonoBehaviour {
 		else{
 			rabit = false;
 			animator.SetBool ("die",true);
+			if(SoundManager.Instance.isSoundOn())
+				dieSource.Play ();
 			yield return new WaitForSeconds(1.5f);
 			LevelController.current.onRabitDeath(this);
 			animator.SetBool ("die",false);

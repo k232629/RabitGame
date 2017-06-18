@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Orc : MonoBehaviour {
+	
+	public AudioClip attackSound = null;
+	protected AudioSource attackSource = null;
 	public bool isCarrotAttack;
 	public Vector3 startPoint;
 	public Vector3 destinationPoint;
@@ -21,7 +24,8 @@ public class Orc : MonoBehaviour {
 		this.heroParent = this.transform.parent;
 		myBody = this.GetComponent<Rigidbody2D> ();
 		sr = GetComponent<SpriteRenderer>();
-
+		attackSource = gameObject.AddComponent<AudioSource> ();
+		attackSource.clip = attackSound;
 	}
 
 	void FixedUpdate () {
