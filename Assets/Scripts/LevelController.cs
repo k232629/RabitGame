@@ -132,4 +132,9 @@ public class LevelController : MonoBehaviour {
 	public void setMusicOn(){
 		musicSource.Play();
 	}
+	public void addLife(){
+		if (this.numberOfLives < 3)
+			numberOfLives++;
+		lives.setLives (numberOfLives);
+	}
 }
